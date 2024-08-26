@@ -49,3 +49,41 @@
   align-items: center;
   gap: 1rem;
 }
+
+/* // XX-Large devices (larger desktops, 1400px and up) */
+@media (max-width: 1400px) {  }
+
+/* // X-Large devices (large desktops, 1200px and up) */
+@media (max-width: 1200px) {  }
+
+/* // Large devices (desktops, 992px and up) */
+@media (max-width: 992px) {  }
+
+/* // Medium devices (tablets, 768px and up) */
+@media (max-width: 768px) { 
+  .p-inputtext{
+    width: 200px;
+  }
+  .card-title h2{
+    font-size: 1rem;
+  }
+  .cardContent{
+    font-size: .9rem;
+  }
+  .p-card .p-card-body{
+    padding: .8rem;
+  }
+  .p-card .p-card-content{
+    padding: .8rem 0;
+  }
+  .p-dialog {
+    width: 74vw !important;
+  }
+ }
+
+/* // Small devices (landscape phones, 576px and up) */
+@media (max-width: 576px) {  }
+
+
+
+

@@ -4,7 +4,7 @@ import { Card } from 'primereact/card';
 function SkeletonLoader() {
     return (
         <div className="grid flex-wrap">
-            <div className="col-6 sm:col-6 md:col-3 ">
+            <div className="col-12 sm:col-6 md:col-3 ">
                 <Card className="h-100 noteCard">
                     <div className="card-title">
                         <Skeleton height="2rem" className="mt-0 mb-2"></Skeleton>
@@ -17,7 +17,7 @@ function SkeletonLoader() {
                     </p>
                 </Card>
             </div>
-            <div className="col-6 sm:col-6 md:col-3 ">
+            <div className="col-12 sm:col-6 md:col-3 ">
                 <Card className="h-100 noteCard">
                     <div className="card-title">
                         <Skeleton height="2rem" className="mt-0 mb-2"></Skeleton>
@@ -30,7 +30,7 @@ function SkeletonLoader() {
                     </p>
                 </Card>
             </div>
-            <div className="col-6 sm:col-6 md:col-3 ">
+            <div className="col-12 sm:col-6 md:col-3 ">
                 <Card className="h-100 noteCard">
                     <div className="card-title">
                         <Skeleton height="2rem" className="mt-0 mb-2"></Skeleton>
@@ -43,7 +43,7 @@ function SkeletonLoader() {
                     </p>
                 </Card>
             </div>
-            <div className="col-6 sm:col-6 md:col-3 ">
+            <div className="col-12 sm:col-6 md:col-3 ">
                 <Card className="h-100 noteCard">
                     <div className="card-title">
                         <Skeleton height="2rem" className="mt-0 mb-2"></Skeleton>
@@ -56,7 +56,7 @@ function SkeletonLoader() {
                     </p>
                 </Card>
             </div>
-            <div className="col-6 sm:col-6 md:col-3 ">
+            <div className="col-12   sm:col-6 md:col-3 ">
                 <Card className="h-100 noteCard">
                     <div className="card-title">
                         <Skeleton height="2rem" className="mt-0 mb-2"></Skeleton>

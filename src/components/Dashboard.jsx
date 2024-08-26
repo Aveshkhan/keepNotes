@@ -4,6 +4,9 @@ import axios from "axios";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import SkeletonLoader from "./SkeletonLoader";
+// import 'primereact/resources/themes/lara-dark-indigo/theme.css'; //theme
+import 'primereact/resources/themes/lara-light-indigo/theme.css'; //theme
+
 
 import logo from '../assets/Notes app logo.png'
 
@@ -23,6 +26,8 @@ import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
 
 function Dashboard() {
 
+    const [theme, setTheme] = useState(false);
+
     const [notes, setNotes] = useState([])
     const [filteredNotes, setfilteredNotes] = useState([])
     const [sortedNotes, setSortedNotes] = useState([])
@@ -32,7 +37,7 @@ function Dashboard() {
     const [visibleUpdate, setVisibleUpdate] = useState(false);
     const [sortOrder, setSortOrder] = useState(Boolean);
     const [onNote, setOnNote] = useState({});
-    const toggleSearchBar = useRef(null)
+    const toggleSearchBar = useRef(false)
     const menuRight = useRef(null);
     const toast = useRef(null);
 
@@ -82,6 +87,10 @@ function Dashboard() {
             .required("Content is required"),
     });
 
+    const changeTheme = () => {
+        setTheme(!theme)
+    }
+
     const handleSubmit = () => {
         console.log("handle SUbmit")
         createNotes.mutate({
@@ -103,7 +112,7 @@ function Dashboard() {
             'content': content
         })
     }
-    
+
     const formik2 = useFormik({
         initialValues: initialValues,
         validationSchema: validationSchema,
@@ -225,6 +234,9 @@ function Dashboard() {
 
     return (
         <div>
+            {theme === true &&
+                <link rel="stylesheet" href="../../node_modules/primereact/resources/themes/lara-dark-indigo/theme.css" />
+            }
             <div className="container mt-3">
                 <ConfirmDialog />
                 <Button className="addNoteBtn shadow-6" raised label="Add Note" icon="pi pi-plus" size="large" onClick={() => setVisible(true)} />
@@ -239,7 +251,7 @@ function Dashboard() {
                         ) : null}
                         <FloatLabel className="mt-5">
                             <InputTextarea id="Content" invalid={formik.touched.content && formik.errors.content} className="w-full" value={content} onChange={(e) => setContent(e.target.value)} rows={5} cols={30} />
-                            <label htmlFor="Content">Content</label>    
+                            <label htmlFor="Content">Content</label>
                         </FloatLabel>
                         {formik.touched.content && formik.errors.content ? (
                             <small className="text-red-600">{formik.errors.content}</small>
@@ -251,7 +263,7 @@ function Dashboard() {
                 {/* update Note Dialog */}
                 <Dialog header="Update Note" visible={visibleUpdate} style={{ width: '50vw' }} onHide={() => { if (!visibleUpdate) return; setVisibleUpdate(false); setTitle(''); setContent('') }}>
                     <form className="my-5" onSubmit={formik2.handleSubmit}>
-                    <FloatLabel className="">
+                        <FloatLabel className="">
                             <InputText id="Title" invalid={formik2.touched.title && formik2.errors.title} className="w-full" value={title} onChange={(e) => setTitle(e.target.value)} />
                             <label htmlFor="Title">Title</label>
                         </FloatLabel>
@@ -260,7 +272,7 @@ function Dashboard() {
                         ) : null}
                         <FloatLabel className="mt-5">
                             <InputTextarea id="Content" invalid={formik2.touched.content && formik2.errors.content} className="w-full" value={content} onChange={(e) => setContent(e.target.value)} rows={5} cols={30} />
-                            <label htmlFor="Content">Content</label>    
+                            <label htmlFor="Content">Content</label>
                         </FloatLabel>
                         {formik2.touched.content && formik2.errors.content ? (
                             <small className="text-red-600">{formik2.errors.content}</small>
@@ -270,16 +282,17 @@ function Dashboard() {
                 </Dialog>
 
                 <nav className="Nav">
-                    <div className="logo">
+                    <div className="logo" onClick={changeTheme}>
                         {/* <box-icon type='solid' name='note'></box-icon> */}
                         <img src={logo} alt="logo" />
                     </div>
-                    <div className="heroHeader">
+                    <div className="heroHeader" onClick={getNotes.refetch}>
                         Keep Notes
                     </div>
                     <div className="searchIcon">
                         <StyleClass nodeRef={toggleSearchBar} selector=".searchInput" toggleClassName="hidden" >
-                            <box-icon ref={toggleSearchBar} name='search'></box-icon>
+                            {/* <box-icon ref={toggleSearchBar} name='search'></box-icon> */}
+                            <i ref={toggleSearchBar} className="pi pi-search" style={{ fontSize: '1.3rem' }}> </i>
                         </StyleClass>
                     </div>
                 </nav>
@@ -307,7 +320,7 @@ function Dashboard() {
 
                         {filteredNotes && filteredNotes.length > 0 && filteredNotes.map((item) => (
 
-                            <div key={item.id} className="col-6 sm:col-6 md:col-3 ">
+                            <div key={item.id} className="col-12 sm:col-6 md:col-3 ">
                                 <Card className="h-100 noteCard">
                                     <div className="card-title">
                                         <h2 className="mt-0">{item.title}</h2>
@@ -315,7 +328,7 @@ function Dashboard() {
                                         <box-icon name='dots-vertical-rounded' onClick={(event) => getNoteData(event, item)} aria-controls="popup_menu_right" aria-haspopup ></box-icon>
                                         <Menu model={menu} popup ref={menuRight} id="popup_menu_right" popupAlignment="right" />
                                     </div>
-                                    <p className="m-0">
+                                    <p className="m-0 cardContent">
                                         {item.content}
                                     </p>
                                 </Card>
