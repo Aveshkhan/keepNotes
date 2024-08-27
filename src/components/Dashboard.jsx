@@ -235,7 +235,7 @@ function Dashboard() {
     return (
         <div>
             {theme === true &&
-                <link rel="stylesheet" href="../../node_modules/primereact/resources/themes/lara-dark-indigo/theme.css" />
+                <link rel="stylesheet" href="/themes/lara-dark-indigo/theme.css" />
             }
             <div className="container mt-3">
                 <ConfirmDialog />
