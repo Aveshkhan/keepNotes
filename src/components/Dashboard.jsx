@@ -15,7 +15,7 @@ import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
 import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
-import { StyleClass } from 'primereact/styleclass';
+// import { StyleClass } from 'primereact/styleclass';
 import { Dialog } from 'primereact/dialog';
 import { FloatLabel } from 'primereact/floatlabel';
 import { InputTextarea } from 'primereact/inputtextarea';
@@ -24,10 +24,13 @@ import { Toast } from 'primereact/toast';
 import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
 
 
+
 function Dashboard() {
 
     const [theme, setTheme] = useState(false);
 
+    const [userDetails, setUserDetails] = useState([])
+    const [isLogged, setisLogged] = useState(false)
     const [notes, setNotes] = useState([])
     const [filteredNotes, setfilteredNotes] = useState([])
     const [sortedNotes, setSortedNotes] = useState([])
@@ -37,7 +40,7 @@ function Dashboard() {
     const [visibleUpdate, setVisibleUpdate] = useState(false);
     const [sortOrder, setSortOrder] = useState(Boolean);
     const [onNote, setOnNote] = useState({});
-    const toggleSearchBar = useRef(false)
+    // const toggleSearchBar = useRef(false)
     const menuRight = useRef(null);
     const toast = useRef(null);
 
@@ -192,7 +195,7 @@ function Dashboard() {
     })
 
     useEffect(() => {
-        console.log(notes)
+        getUser()
     }, [])
 
     const sorting = () => {
@@ -231,6 +234,43 @@ function Dashboard() {
             }
         }
     })
+
+    const googleAuth = () => {
+        window.open(
+            `http://localhost:5000/auth/google/callback`,
+            "_self"
+        );
+    }
+
+    const getUser = async () => {
+        try {
+            const url = `http://localhost:5000/auth/login/success`;
+            const { data } = await axios.get(url, { withCredentials: true });
+            setUserDetails(data.user._json)
+            setisLogged(true)
+            console.log(data.user._json, isLogged);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const googleAuthLogout = async () => {
+        try {
+            const url = `http://localhost:5000/auth/logout`;
+            const { data } = await axios.get(url, { withCredentials: true });
+            setisLogged(false)
+            console.log(data, isLogged);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    const LogOutBtn =
+        <Button onClick={googleAuthLogout} label="Log Out" icon="pi pi-sign-out" iconPos="right" size="small" rounded >
+            {/* <img alt="Profile-Picture" src={userDetails.picture} className="h-2rem border-circle" /> */}
+        </Button>;
+    const LogInBtn =
+        <Button onClick={googleAuth} label="Sign In" icon="pi pi-sign-in" iconPos="right" size="small" rounded />;
 
     return (
         <div>
@@ -290,12 +330,14 @@ function Dashboard() {
                         Keep Notes
                     </div>
                     <div className="searchIcon">
-                        <StyleClass nodeRef={toggleSearchBar} selector=".searchInput" toggleClassName="hidden" >
-                            {/* <box-icon ref={toggleSearchBar} name='search'></box-icon> */}
+                        {/* <StyleClass nodeRef={toggleSearchBar} selector=".searchInput" toggleClassName="hidden" >
                             <i ref={toggleSearchBar} className="pi pi-search" style={{ fontSize: '1.3rem' }}> </i>
-                        </StyleClass>
+                        </StyleClass> */}
+                        {isLogged === true ? LogOutBtn : LogInBtn
+                        }
                     </div>
                 </nav>
+
                 <div className="searchInput mb-3">
                     {/* <InputText className="p-inputtext-sm" value={search} onChange={(e) => setSearch(e.target.value)} /> */}
 
