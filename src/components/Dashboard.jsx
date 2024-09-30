@@ -27,6 +27,9 @@ import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
 
 function Dashboard() {
 
+    // const apiURL = 'http://localhost:5000/';
+    const apiURL = 'https://notes-app-web-service.onrender.com/';
+
     const [theme, setTheme] = useState(false);
 
     const [userDetails, setUserDetails] = useState([])
@@ -81,6 +84,41 @@ function Dashboard() {
         }
     ];
 
+    // Auth
+
+    const googleAuth = () => {
+        window.open(
+            `${apiURL}auth/google/callback`,
+            "_self"
+        );
+    }
+
+    const getUser = async () => {
+        try {
+            const url = `${apiURL}auth/login/success`;
+            const { data } = await axios.get(url, { withCredentials: true });
+            setUserDetails(data.user)
+            setisLogged(true)
+            console.log(data.user, isLogged);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const googleAuthLogout = async () => {
+        try {
+            const url = `${apiURL}auth/logout`;
+            const { data } = await axios.get(url, { withCredentials: true });
+            setisLogged(false);
+            console.log(data, isLogged);
+            setUserDetails([]);
+            setNotes([]);
+            setfilteredNotes([]);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     const validationSchema = Yup.object().shape({
         title: Yup.string()
             .min(3, "Minimum 3 character required")
@@ -95,8 +133,10 @@ function Dashboard() {
     }
 
     const handleSubmit = () => {
-        console.log("handle SUbmit")
+        console.log("handle Submit")
+        const userId = userDetails._id;
         createNotes.mutate({
+            'userId': userId,
             'title': title,
             'content': content
         })
@@ -123,16 +163,24 @@ function Dashboard() {
         onSubmit: handleUpdate,
     });
 
-    const getNotes = useQuery(['notes'], async () => {
-        setNotes([]);
-        return await axios.get("https://notes-app-web-service.onrender.com/api/notes").then(Response => {
-            setNotes(Response.data)
-            setfilteredNotes(Response.data)
-            return Response.data
-        }).catch(Error =>
-            console.log("Error Occured ===>", Error)
-        )
+    const getNotes = useQuery(['notes', userDetails], async () => {
+        if (userDetails.length !== 0) {
+            setNotes([]);
+            const userId = userDetails._id
+            console.log(userId)
+            return await axios.get(apiURL + `api/notes/${userId}/notes`).then(Response => {
+                setNotes(Response.data)
+                setfilteredNotes(Response.data)
+                return Response.data
+            }).catch(Error =>
+                console.log("Error Occured ===>", Error)
+            )
+        } else {
+            console.log('Login Error')
+        }
+
     });
+
 
     const getNoteData = (event, item) => {
         menuRight.current.toggle(event)
@@ -144,7 +192,7 @@ function Dashboard() {
         mutationFn: async (newNote) => {
             console.log(newNote)
             setVisible(false);
-            return await axios.post("https://notes-app-web-service.onrender.com/api/notes", newNote)
+            return await axios.post(apiURL + 'api/notes', newNote)
         },
         onSuccess: async (res) => {
             setTitle('')
@@ -164,7 +212,7 @@ function Dashboard() {
 
     const deleteNote = useMutation({
         mutationFn: async () => {
-            return await axios.delete(`https://notes-app-web-service.onrender.com/api/notes/${onNote._id}`)
+            return await axios.delete(apiURL + `api/notes/${onNote._id}`)
         },
         onSuccess: async (res) => {
             await getNotes.refetch()
@@ -180,7 +228,7 @@ function Dashboard() {
         mutationFn: async (updatedNote) => {
             console.log(updatedNote)
             setVisibleUpdate(false)
-            return await axios.put(`https://notes-app-web-service.onrender.com/api/notes/${onNote._id}`, updatedNote)
+            return await axios.put(apiURL + `api/notes/${onNote._id}`, updatedNote)
         },
         onSuccess: async (res) => {
             setTitle('')
@@ -235,35 +283,7 @@ function Dashboard() {
         }
     })
 
-    const googleAuth = () => {
-        window.open(
-            `http://localhost:5000/auth/google/callback`,
-            "_self"
-        );
-    }
 
-    const getUser = async () => {
-        try {
-            const url = `http://localhost:5000/auth/login/success`;
-            const { data } = await axios.get(url, { withCredentials: true });
-            setUserDetails(data.user._json)
-            setisLogged(true)
-            console.log(data.user._json, isLogged);
-        } catch (err) {
-            console.log(err);
-        }
-    };
-
-    const googleAuthLogout = async () => {
-        try {
-            const url = `http://localhost:5000/auth/logout`;
-            const { data } = await axios.get(url, { withCredentials: true });
-            setisLogged(false)
-            console.log(data, isLogged);
-        } catch (err) {
-            console.log(err);
-        }
-    }
 
     const LogOutBtn =
         <Button onClick={googleAuthLogout} label="Log Out" icon="pi pi-sign-out" iconPos="right" size="small" rounded >
@@ -358,6 +378,10 @@ function Dashboard() {
 
                         {getNotes.isError && (
                             <div>{`Error get data!!!`}</div>
+                        )}
+
+                        {isLogged === false && (
+                            <div> Please Logged In</div>
                         )}
 
                         {filteredNotes && filteredNotes.length > 0 && filteredNotes.map((item) => (
