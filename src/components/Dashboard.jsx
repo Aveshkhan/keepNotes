@@ -21,7 +21,11 @@ import { FloatLabel } from 'primereact/floatlabel';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Menu } from 'primereact/menu';
 import { Toast } from 'primereact/toast';
+import { Avatar } from 'primereact/avatar';
 import { confirmDialog, ConfirmDialog } from "primereact/confirmdialog";
+import Error from "./Error";
+import LoginError from "./LoginError";
+import NoData from "./NoData";
 
 
 
@@ -129,7 +133,15 @@ function Dashboard() {
     });
 
     const changeTheme = () => {
-        setTheme(!theme)
+        let e = localStorage.getItem('theme')
+        console.log(e)
+        if (e === 'false') {
+            setTheme(true)
+            localStorage.setItem('theme', true)
+        } else {
+            setTheme(false)
+            localStorage.setItem('theme', false)
+        }
     }
 
     const handleSubmit = () => {
@@ -244,6 +256,19 @@ function Dashboard() {
 
     useEffect(() => {
         getUser()
+
+        if (!localStorage.getItem('theme')) {
+            localStorage.setItem('theme', theme)
+        } else {
+            let e = localStorage.getItem('theme')
+            if (e === 'false') {
+                setTheme(false)
+                localStorage.setItem('theme', false)
+            } else {
+                setTheme(true)
+                localStorage.setItem('theme', true)
+            }
+        }
     }, [])
 
     const sorting = () => {
@@ -287,7 +312,7 @@ function Dashboard() {
 
     const LogOutBtn =
         <Button onClick={googleAuthLogout} label="Log Out" icon="pi pi-sign-out" iconPos="right" size="small" rounded >
-            {/* <img alt="Profile-Picture" src={userDetails.picture} className="h-2rem border-circle" /> */}
+            {/* <img alt="Profile-Picture" src={userDetails.image} className="h-2rem border-circle" /> */}
         </Button>;
     const LogInBtn =
         <Button onClick={googleAuth} label="Sign In" icon="pi pi-sign-in" iconPos="right" size="small" rounded />;
@@ -299,7 +324,9 @@ function Dashboard() {
             }
             <div className="container mt-3">
                 <ConfirmDialog />
-                <Button className="addNoteBtn shadow-6" raised label="Add Note" icon="pi pi-plus" size="large" onClick={() => setVisible(true)} />
+                {isLogged === true && (
+                    <Button className="addNoteBtn shadow-6" raised label="Add Note" icon="pi pi-plus" size="large" onClick={() => setVisible(true)} />
+                )}
                 <Dialog header="Add New Note" visible={visible} style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); setTitle(''); setContent('') }}>
                     <form className="my-5" onSubmit={formik.handleSubmit}>
                         <FloatLabel className="">
@@ -342,11 +369,11 @@ function Dashboard() {
                 </Dialog>
 
                 <nav className="Nav">
-                    <div className="logo" onClick={changeTheme}>
+                    <div className="logo cursorPointer" onClick={changeTheme}>
                         {/* <box-icon type='solid' name='note'></box-icon> */}
                         <img src={logo} alt="logo" />
                     </div>
-                    <div className="heroHeader" onClick={getNotes.refetch}>
+                    <div className="heroHeader cursorPointer" onClick={getNotes.refetch}>
                         Keep Notes
                     </div>
                     <div className="searchIcon">
@@ -357,18 +384,27 @@ function Dashboard() {
                         }
                     </div>
                 </nav>
+                {isLogged === true && userDetails && (
+                    <>
+                        <div className="welcomeText">
+                            <Avatar image={userDetails.image || logo} shape="circle" />
+                            <h3>Welcome {userDetails.username}</h3>
+                        </div>
+                        {/* <img alt="Profile-Picture" src= className="h-2rem border-circle" /> */}
 
-                <div className="searchInput mb-3">
-                    {/* <InputText className="p-inputtext-sm" value={search} onChange={(e) => setSearch(e.target.value)} /> */}
 
-                    <IconField iconPosition="left">
-                        <InputIcon className="pi pi-search"> </InputIcon>
-                        <InputText placeholder="Search" onChange={(e) => SearchMethod(e.target.value)} />
-                    </IconField>
+                        <div className="searchInput mb-3">
+                            {/* <InputText className="p-inputtext-sm" value={search} onChange={(e) => setSearch(e.target.value)} /> */}
 
-                    <Button icon="pi pi-sort-alt" size="small" rounded outlined severity="secondary" onClick={sorting} />
-                </div>
+                            <IconField iconPosition="left">
+                                <InputIcon className="pi pi-search"> </InputIcon>
+                                <InputText placeholder="Search" onChange={(e) => SearchMethod(e.target.value)} />
+                            </IconField>
 
+                            <Button icon="pi pi-sort-alt" size="small" rounded outlined severity="secondary" onClick={sorting} />
+                        </div>
+                    </>
+                )}
                 <div className="notes">
                     <div className="grid flex-wrap">
 
@@ -376,12 +412,16 @@ function Dashboard() {
                             <SkeletonLoader />
                         )}
 
-                        {getNotes.isError && (
-                            <div>{`Error get data!!!`}</div>
+                        {getNotes.isError && isLogged === true && (
+                            <Error />
                         )}
 
-                        {isLogged === false && (
-                            <div> Please Logged In</div>
+                        {isLogged === false && getNotes.isError === true && (
+                            <LoginError />
+                        )}
+
+                        {filteredNotes.length === 0 && isLogged === true && getNotes.isError === false && (
+                            <NoData />
                         )}
 
                         {filteredNotes && filteredNotes.length > 0 && filteredNotes.map((item) => (

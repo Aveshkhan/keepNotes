@@ -1,25 +1,29 @@
-.container{
+.container {
   margin: 10px 8%;
 }
 
-.Nav{
+.cursorPointer {
+  cursor: pointer;
+}
+
+.Nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
 
-.logo img{
+.logo img {
   height: 50px;
 }
 
 
-.heroHeader{
+.heroHeader {
   font-family: "Edu AU VIC WA NT Hand", cursive;
   font-weight: 600;
 }
 
-.addNoteBtn{
+.addNoteBtn {
   position: fixed;
   bottom: 20px;
   right: 20px;
@@ -31,11 +35,11 @@
   align-items: flex-start;
 }
 
-.card-title box-icon{
+.card-title box-icon {
   cursor: pointer;
 }
 
-.skeletonLoader{
+.skeletonLoader {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -43,47 +47,68 @@
   flex-wrap: wrap;
 }
 
-.searchInput{
+.searchInput {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
 }
 
+.DisplayImg {
+  height: 60vh;
+  width: 100%;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.DisplayImg img {
+  height: 330px;
+  width: 100%;
+}
+
+.welcomeText{
+  display: flex;
+  align-items: center;  
+  gap: 10px;
+}
+
 /* // XX-Large devices (larger desktops, 1400px and up) */
-@media (max-width: 1400px) {  }
+@media (max-width: 1400px) {}
 
 /* // X-Large devices (large desktops, 1200px and up) */
-@media (max-width: 1200px) {  }
+@media (max-width: 1200px) {}
 
 /* // Large devices (desktops, 992px and up) */
-@media (max-width: 992px) {  }
+@media (max-width: 992px) {}
 
 /* // Medium devices (tablets, 768px and up) */
-@media (max-width: 768px) { 
-  .p-inputtext{
+@media (max-width: 768px) {
+  .p-inputtext {
     width: 200px;
   }
-  .card-title h2{
+
+  .card-title h2 {
     font-size: 1rem;
   }
-  .cardContent{
+
+  .cardContent {
     font-size: .9rem;
   }
-  .p-card .p-card-body{
+
+  .p-card .p-card-body {
     padding: .8rem;
   }
-  .p-card .p-card-content{
+
+  .p-card .p-card-content {
     padding: .8rem 0;
   }
+
   .p-dialog {
     width: 74vw !important;
   }
- }
+}
 
 /* // Small devices (landscape phones, 576px and up) */
-@media (max-width: 576px) {  }
-
-
-
-
+@media (max-width: 576px) {}
