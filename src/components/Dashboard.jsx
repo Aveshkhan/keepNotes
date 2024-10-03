@@ -31,8 +31,8 @@ import NoData from "./NoData";
 
 function Dashboard() {
 
-    const apiURL = 'http://localhost:5000/';
-    // const apiURL = 'https://notes-app-web-service.onrender.com/';
+    // const apiURL = 'http://localhost:5000/';
+    const apiURL = 'https://notes-app-web-service.onrender.com/';
 
     const [theme, setTheme] = useState(false);
 
