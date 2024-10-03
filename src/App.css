@@ -39,12 +39,9 @@
   cursor: pointer;
 }
 
-.skeletonLoader {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
+.skeletonLoader .noteCard {
+  width: 100%;
+
 }
 
 .searchInput {
@@ -68,11 +65,41 @@
   width: 100%;
 }
 
-.welcomeText{
+.welcomeText {
   display: flex;
-  align-items: center;  
+  align-items: center;
   gap: 10px;
 }
+
+.card-title h2 {
+  overflow-wrap: break-word;
+  hyphens: manual;
+  max-width: 85%;
+}
+
+.cardContent {
+  /* word-break: break-all; */
+  /* word-wrap: break-word; */
+  overflow-wrap: break-word;
+  hyphens: manual;
+}
+
+.notesContainer {
+  column-count: 3;
+}
+
+.notesContainer>:not([hidden])~:not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(1.5rem * var(--tw-space-y-reverse))
+}
+
+.noteCard {
+  width: 100%;
+  break-inside: avoid;
+}
+
+
 
 /* // XX-Large devices (larger desktops, 1400px and up) */
 @media (max-width: 1400px) {}
@@ -85,6 +112,11 @@
 
 /* // Medium devices (tablets, 768px and up) */
 @media (max-width: 768px) {
+
+  .notesContainer {
+    column-count: 2;
+  }
+
   .p-inputtext {
     width: 200px;
   }
@@ -108,7 +140,12 @@
   .p-dialog {
     width: 74vw !important;
   }
+
 }
 
 /* // Small devices (landscape phones, 576px and up) */
-@media (max-width: 576px) {}
+@media (max-width: 576px) {
+  .notesContainer {
+    column-count: 1;
+  }
+}

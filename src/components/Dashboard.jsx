@@ -31,8 +31,8 @@ import NoData from "./NoData";
 
 function Dashboard() {
 
-    // const apiURL = 'http://localhost:5000/';
-    const apiURL = 'https://notes-app-web-service.onrender.com/';
+    const apiURL = 'http://localhost:5000/';
+    // const apiURL = 'https://notes-app-web-service.onrender.com/';
 
     const [theme, setTheme] = useState(false);
 
@@ -101,6 +101,7 @@ function Dashboard() {
         try {
             const url = `${apiURL}auth/login/success`;
             const { data } = await axios.get(url, { withCredentials: true });
+            console.log(data)
             setUserDetails(data.user)
             setisLogged(true)
             console.log(data.user, isLogged);
@@ -387,11 +388,9 @@ function Dashboard() {
                 {isLogged === true && userDetails && (
                     <>
                         <div className="welcomeText">
-                            <Avatar image={userDetails.image || logo} shape="circle" />
+                            <Avatar image={userDetails.image} shape="circle" />
                             <h3>Welcome {userDetails.username}</h3>
                         </div>
-                        {/* <img alt="Profile-Picture" src= className="h-2rem border-circle" /> */}
-
 
                         <div className="searchInput mb-3">
                             {/* <InputText className="p-inputtext-sm" value={search} onChange={(e) => setSearch(e.target.value)} /> */}
@@ -405,30 +404,29 @@ function Dashboard() {
                         </div>
                     </>
                 )}
-                <div className="notes">
-                    <div className="grid flex-wrap">
+                <div className="notes mb-8">
+                    {getNotes.isFetching && (
+                        <SkeletonLoader />
+                    )}
 
-                        {getNotes.isFetching && (
-                            <SkeletonLoader />
-                        )}
+                    {isLogged === false && getNotes.isError === true && (
+                        <LoginError />
+                    )}
 
-                        {getNotes.isError && isLogged === true && (
-                            <Error />
-                        )}
+                    {getNotes.isError && isLogged === true && (
+                        <Error />
+                    )}
 
-                        {isLogged === false && getNotes.isError === true && (
-                            <LoginError />
-                        )}
+                    {filteredNotes.length === 0 && isLogged === true && getNotes.isError === false && (
+                        <NoData />
+                    )}
+                    <div className="notesContainer">
 
-                        {filteredNotes.length === 0 && isLogged === true && getNotes.isError === false && (
-                            <NoData />
-                        )}
+                        {filteredNotes && filteredNotes.length > 0 && !getNotes.isFetching && filteredNotes.map((item) => (
 
-                        {filteredNotes && filteredNotes.length > 0 && filteredNotes.map((item) => (
-
-                            <div key={item.id} className="col-12 sm:col-6 md:col-3 ">
+                            <div key={item.id} className="noteCard">
                                 <Card className="h-100 noteCard">
-                                    <div className="card-title">
+                                    <div className="card-title gap-2">
                                         <h2 className="mt-0">{item.title}</h2>
                                         <Toast ref={toast}></Toast>
                                         <box-icon name='dots-vertical-rounded' onClick={(event) => getNoteData(event, item)} aria-controls="popup_menu_right" aria-haspopup ></box-icon>
